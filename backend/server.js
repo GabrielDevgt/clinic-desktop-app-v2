@@ -11,10 +11,12 @@ app.use(cors());
 const pacientesRoutes = require('./routes/pacientes');
 const consultasRoutes = require('./routes/consultas');
 const citasRoutes = require('./routes/citas');
+const doctoresRoutes = require('./routes/doctores');
 
 app.use('/pacientes', pacientesRoutes);
 app.use('/consultas', consultasRoutes);
 app.use('/citas', citasRoutes);
+app.use('/doctores', doctoresRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
