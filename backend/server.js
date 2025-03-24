@@ -9,10 +9,12 @@ app.use(cors());
 
 // Importamos las rutas
 const pacientesRoutes = require('./routes/pacientes');
-const consultasRoutes = require('./routes/consultas'); // ✅ Agregamos esta línea
+const consultasRoutes = require('./routes/consultas');
+const citasRoutes = require('./routes/citas');
 
 app.use('/pacientes', pacientesRoutes);
-app.use('/consultas', consultasRoutes); // ✅ Agregamos esta línea
+app.use('/consultas', consultasRoutes);
+app.use('/citas', citasRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
