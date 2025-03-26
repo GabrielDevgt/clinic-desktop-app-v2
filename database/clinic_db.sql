@@ -26,7 +26,7 @@ CREATE TABLE doctores (
 CREATE TABLE Consultas(
  id_consulta INT auto_increment PRIMARY KEY,
  id_paciente INT NOT NULL,
- fecha_consulta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ fecha_consulta TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- ES automatico no lo inserta el cliente
  motivo_consulta TEXT NOT NULL,
  historial_enfermedad text NOT NULL,
  presion_arterial VARCHAR(20),
@@ -77,3 +77,6 @@ CREATE TABLE examen_medico(
  id_tipo_examen INT,
  FOREIGN KEY(id_tipo_examen) REFERENCES tipo_examen(id_tipo_examen) ON DELETE CASCADE
 );
+select * from pacientes;
+select * from consultas;
+select * from doctores;
