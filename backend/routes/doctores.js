@@ -30,14 +30,14 @@ router.get('/:id', (req, res) => {
 
 // 🔹 Agregar un nuevo doctor
 router.post('/', (req, res) => {
-    const { nombre, especialidad } = req.body;
+    const { nombre } = req.body;
 
-    if (!nombre || !especialidad) {
+    if (!nombre) {
         return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
-    const sql = `INSERT INTO doctores (nombre, especialidad) VALUES (?, ?)`;
-    db.query(sql, [nombre, especialidad], (err, result) => {
+    const sql = `INSERT INTO doctores (nombre) VALUES (?)`;
+    db.query(sql, [nombre], (err, result) => {
         if (err) {
             console.error('Error insertando doctor:', err);
             return res.status(500).json({ error: 'Error insertando doctor' });

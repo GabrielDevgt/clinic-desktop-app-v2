@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Importamos la conexión a MySQL
+const db = require('../db');
 
 // 🔹 Obtener todas las consultas
 router.get('/', (req, res) => {
@@ -28,7 +28,7 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// 🔹 Agregar una nueva consulta
+// 🔹 Agregar una nueva consulta (ya está bien optimizado)
 router.post('/', (req, res) => {
     const { id_paciente, motivo_consulta, historial_enfermedad, presion_arterial, frecuencia_cardiaca, peso, altura } = req.body;
 
@@ -36,18 +36,17 @@ router.post('/', (req, res) => {
         return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
-    // 🔹 Verificar si el paciente existe
+    // Verificar si el paciente existe
     db.query('SELECT id_paciente FROM pacientes WHERE id_paciente = ?', [id_paciente], (err, results) => {
         if (err) {
             console.error('Error verificando paciente:', err);
             return res.status(500).json({ error: 'Error verificando paciente' });
         }
-
         if (results.length === 0) {
             return res.status(404).json({ error: 'ID de paciente no registrado' });
         }
 
-        // 🔹 Si el paciente existe, insertar la consulta
+        // Insertar la consulta
         const sql = `INSERT INTO consultas (id_paciente, motivo_consulta, historial_enfermedad, presion_arterial, frecuencia_cardiaca, peso, altura) 
                      VALUES (?, ?, ?, ?, ?, ?, ?)`;
         const values = [id_paciente, motivo_consulta, historial_enfermedad, presion_arterial, frecuencia_cardiaca, peso, altura];
@@ -62,35 +61,92 @@ router.post('/', (req, res) => {
     });
 });
 
-
-// 🔹 Actualizar una consulta
+// 🔹 Actualizar una consulta (mejorado)
 router.put('/:id', (req, res) => {
     const { id } = req.params;
-    const { motivo_consulta, historial_enfermedad, presion_arterial, frecuencia_cardiaca, peso, altura } = req.body;
+    const { id_paciente, motivo_consulta, historial_enfermedad, presion_arterial, frecuencia_cardiaca, peso, altura } = req.body;
 
-    const sql = `UPDATE consultas SET motivo_consulta=?, historial_enfermedad=?, presion_arterial=?, frecuencia_cardiaca=?, peso=?, altura=? 
-                 WHERE id_consulta=?`;
-    const values = [motivo_consulta, historial_enfermedad, presion_arterial, frecuencia_cardiaca, peso, altura, id];
+    // Validar campos obligatorios
+    if (!motivo_consulta || !historial_enfermedad) {
+        return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
 
-    db.query(sql, values, (err, result) => {
+    // Verificar si la consulta existe
+    db.query('SELECT id_consulta FROM consultas WHERE id_consulta = ?', [id], (err, results) => {
         if (err) {
-            console.error('Error actualizando consulta:', err);
-            return res.status(500).json({ error: 'Error actualizando consulta' });
+            console.error('Error verificando consulta:', err);
+            return res.status(500).json({ error: 'Error verificando consulta' });
         }
-        res.json({ message: 'Consulta actualizada correctamente' });
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Consulta no encontrada' });
+        }
+
+        // Si se proporciona id_paciente, verificar que exista
+        if (id_paciente) {
+            db.query('SELECT id_paciente FROM pacientes WHERE id_paciente = ?', [id_paciente], (err, patientResults) => {
+                if (err) {
+                    console.error('Error verificando paciente:', err);
+                    return res.status(500).json({ error: 'Error verificando paciente' });
+                }
+                if (patientResults.length === 0) {
+                    return res.status(404).json({ error: 'ID de paciente no registrado' });
+                }
+                updateConsulta(); // Si todo está bien, proceder a actualizar
+            });
+        } else {
+            updateConsulta(); // Si no se modifica el paciente, actualizar directamente
+        }
     });
+
+    function updateConsulta() {
+        const sql = `UPDATE consultas 
+                    SET motivo_consulta=?, historial_enfermedad=?, presion_arterial=?, frecuencia_cardiaca=?, peso=?, altura=?
+                    ${id_paciente ? ', id_paciente=?' : ''} 
+                    WHERE id_consulta=?`;
+        
+        const values = [
+            motivo_consulta, 
+            historial_enfermedad, 
+            presion_arterial, 
+            frecuencia_cardiaca, 
+            peso, 
+            altura,
+            ...(id_paciente ? [id_paciente] : []), // Agregar id_paciente solo si existe
+            id
+        ];
+
+        db.query(sql, values, (err, result) => {
+            if (err) {
+                console.error('Error actualizando consulta:', err);
+                return res.status(500).json({ error: 'Error actualizando consulta' });
+            }
+            res.json({ message: 'Consulta actualizada correctamente' });
+        });
+    }
 });
 
-// 🔹 Eliminar una consulta
+// 🔹 Eliminar una consulta (mejorado)
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
 
-    db.query('DELETE FROM consultas WHERE id_consulta = ?', [id], (err, result) => {
+    // Verificar si la consulta existe antes de borrar
+    db.query('SELECT id_consulta FROM consultas WHERE id_consulta = ?', [id], (err, results) => {
         if (err) {
-            console.error('Error eliminando consulta:', err);
-            return res.status(500).json({ error: 'Error eliminando consulta' });
+            console.error('Error verificando consulta:', err);
+            return res.status(500).json({ error: 'Error verificando consulta' });
         }
-        res.json({ message: 'Consulta eliminada correctamente' });
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Consulta no encontrada' });
+        }
+
+        // Si existe, proceder a borrar
+        db.query('DELETE FROM consultas WHERE id_consulta = ?', [id], (err, result) => {
+            if (err) {
+                console.error('Error eliminando consulta:', err);
+                return res.status(500).json({ error: 'Error eliminando consulta' });
+            }
+            res.json({ message: 'Consulta eliminada correctamente' });
+        });
     });
 });
 
