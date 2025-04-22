@@ -1,2 +1,66 @@
-<h2>Gestión de Pacientes</h2>
-<p>Aquí podrás registrar, buscar y editar pacientes.</p>
+<div class="pacientes-view">
+  <div class="top-bar">
+    <h2>Listado de Pacientes</h2>
+    <div class="actions-container">
+      <button class="btn btn-nuevo" (click)="irANuevoPaciente()">
+        <i class="bi bi-person-plus"></i> Agregar Paciente
+      </button>
+      
+      <button class="btn btn-search-toggle" 
+              [class.active-search]="showSearch"
+              (click)="toggleSearch()">
+        <i class="bi" [class.bi-search]="!showSearch" [class.bi-x-circle]="showSearch"></i>
+        {{ showSearch ? 'Descartar' : 'Buscar' }}
+      </button>
+      
+      <div class="search-container" *ngIf="showSearch">
+        <input type="text" placeholder="Buscar por nombre, teléfono o ID..." 
+               [(ngModel)]="searchTerm" (keyup.enter)="buscarPacientes()">
+        <button class="btn btn-search" (click)="buscarPacientes()">
+          <i class="bi bi-search"></i> Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Edad</th>
+        <th>Género</th>
+        <th>Teléfono</th>
+        <th>Última consulta</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let paciente of (pacientesFiltrados.length ? pacientesFiltrados : pacientes)">
+        <td>{{ paciente.id_paciente }}</td>
+        <td>{{ paciente.nombre1 }} {{ paciente.nombre2 || '' }} {{ paciente.apellido1 }} {{ paciente.apellido2 || '' }}</td>
+        <td>{{ calcularEdad(paciente.fecha_nacimiento) }}</td>
+        <td>{{ paciente.genero }}</td>
+        <td>{{ paciente.telefono }}</td>
+        <td>
+          <span *ngIf="paciente.ultima_consulta; else noData">{{ paciente.ultima_consulta | date:'dd/MM/yyyy' }}</span>
+          <ng-template #noData>N/A</ng-template>
+        </td>
+        <td class="action-buttons">
+          <button class="btn btn-outline-primary btn-sm" (click)="editarPaciente(paciente.id_paciente)" title="Editar">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-outline-info btn-sm" (click)="verHistorial(paciente.id_paciente)" title="Historial">
+            <i class="bi bi-file-medical"></i>
+          </button>
+          <button class="btn btn-outline-success btn-sm" (click)="nuevaConsulta(paciente.id_paciente)" title="Nueva consulta">
+            <i class="bi bi-plus-circle"></i>
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" (click)="verExpediente(paciente.id_paciente)" title="Expediente">
+            <i class="bi bi-folder"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

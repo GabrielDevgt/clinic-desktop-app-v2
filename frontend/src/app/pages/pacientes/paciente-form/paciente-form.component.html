@@ -1,0 +1,47 @@
+<h2 class="text-primary mb-4">Registrar Paciente</h2>
+
+<form class="formulario">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label>Primer Nombre</label>
+      <input type="text" class="form-control" placeholder="Ej: Juan" />
+    </div>
+    <div class="col-md-6">
+      <label>Segundo Nombre</label>
+      <input type="text" class="form-control" placeholder="Ej: Carlos" />
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label>Primer Apellido</label>
+      <input type="text" class="form-control" placeholder="Ej: Pérez" />
+    </div>
+    <div class="col-md-6">
+      <label>Segundo Apellido</label>
+      <input type="text" class="form-control" placeholder="Ej: Gómez" />
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label>DPI</label>
+      <input type="text" class="form-control" placeholder="1234567890123" />
+    </div>
+    <div class="col-md-6">
+      <label>Teléfono</label>
+      <input type="text" class="form-control" placeholder="5555-5555" />
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label>Dirección</label>
+      <input type="text" class="form-control" placeholder="Ej: Zona 1, Ciudad" />
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary mt-3" (click)="guardarPaciente()">
+    Guardar
+  </button>
+  
+</form>

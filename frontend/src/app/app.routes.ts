@@ -7,6 +7,8 @@ import { CitasComponent } from './pages/citas/citas.component';
 import { TratamientosComponent } from './pages/tratamientos/tratamientos.component';
 import { ExamenesComponent } from './pages/examenes/examenes.component';
 import { BusquedaComponent } from './pages/busqueda/busqueda.component';
+import { PacienteFormComponent } from './pages/pacientes/paciente-form/paciente-form.component';
+
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,4 +19,5 @@ export const routes: Routes = [
   { path: 'citas', component: CitasComponent },
   { path: 'tratamientos', component: TratamientosComponent },
   { path: 'examenes', component: ExamenesComponent },
+  { path: 'pacientes/nuevo', component: PacienteFormComponent },
 ];
