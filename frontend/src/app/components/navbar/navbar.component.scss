@@ -1,0 +1,64 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100vh;
+    background: linear-gradient(to bottom, #f5fbfd, #53a0d4); // tono azul clínico
+    color: #254771;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 1rem;
+  
+    .sidebar-header {
+      margin-bottom: 2rem;
+      text-align: center;
+  
+      .Logo-Clinica {
+        max-width:150px;
+      }
+    }
+  
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+  
+      li {
+        a {
+          text-decoration: none;
+          color: #254771;
+          font-size: 15px;
+          font-weight: 500;
+          transition: 0.3s ease-in-out;
+          padding: 8px 12px;
+          border-radius: 6px;
+          display: block;
+  
+          &:hover,
+          &.active {
+            background-color: rgba(21, 89, 112, 0.858);
+            color: white;
+          }
+        }
+      }
+    }
+  
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 14px;
+      color: rgba(7, 38, 91, 0.858);
+      text-align: center;
+  
+      .doctor-info {
+        line-height: 1.3;
+      }
+    }
+  }
+  
